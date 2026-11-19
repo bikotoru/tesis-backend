@@ -1,0 +1,60 @@
+name: Desplegar en Cloud Run
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  desplegar:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDSDK_BILLING_QUOTA_PROJECT: ${{ secrets.GCP_PROYECTO }}
+    steps:
+      - name: Revisar que estén los secretos
+        env:
+          GCP_CREDENCIALES: ${{ secrets.GCP_CREDENCIALES }}
+          GCP_PROYECTO: ${{ secrets.GCP_PROYECTO }}
+          CONEXION_BD: ${{ secrets.CONEXION_BD }}
+          JWT_CLAVE: ${{ secrets.JWT_CLAVE }}
+          WHATSAPP_SECRETO_APP: ${{ secrets.WHATSAPP_SECRETO_APP }}
+          WHATSAPP_TOKEN_VERIFICACION: ${{ secrets.WHATSAPP_TOKEN_VERIFICACION }}
+        run: |
+          faltan=0
+          for nombre in GCP_CREDENCIALES GCP_PROYECTO CONEXION_BD JWT_CLAVE WHATSAPP_SECRETO_APP WHATSAPP_TOKEN_VERIFICACION; do
+            if [ -z "${!nombre}" ]; then
+              echo "::error::Falta el secreto $nombre. Créalo en Settings > Secrets and variables > Actions."
+              faltan=1
+            fi
+          done
+          exit $faltan
+
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Iniciar sesión en Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENCIALES }}
+          project_id: ${{ secrets.GCP_PROYECTO }}
+
+      - name: Desplegar
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ferrelupe-backend
+          project_id: ${{ secrets.GCP_PROYECTO }}
+          region: southamerica-west1
+          source: .
+          flags: --allow-unauthenticated --min-instances=0 --no-cpu-throttling
+          env_vars: |
+            ConnectionStrings__Default=${{ secrets.CONEXION_BD }}
+            Jwt__Clave=${{ secrets.JWT_CLAVE }}
+            ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+            Ia__Simulada=${{ vars.IA_SIMULADA || 'true' }}
+            WhatsApp__Simulado=${{ vars.WHATSAPP_SIMULADO || 'true' }}
+            WhatsApp__Token=${{ secrets.WHATSAPP_TOKEN }}
+            WhatsApp__IdNumero=${{ secrets.WHATSAPP_ID_NUMERO }}
+            WhatsApp__SecretoApp=${{ secrets.WHATSAPP_SECRETO_APP }}
+            WhatsApp__TokenVerificacion=${{ secrets.WHATSAPP_TOKEN_VERIFICACION }}
+            Erp__Simulado=${{ vars.ERP_SIMULADO || 'true' }}
+            Erp__Url=${{ secrets.ERP_URL }}

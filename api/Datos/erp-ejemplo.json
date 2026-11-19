@@ -1,0 +1,10 @@
+[
+  { "codigo": "ELE-001", "nombre": "Cable libre de halógenos 2,5 mm² rojo", "unidad": "metro", "precio": 890, "stock": 480 },
+  { "codigo": "ELE-002", "nombre": "Cable libre de halógenos 2,5 mm² blanco", "unidad": "metro", "precio": 890, "stock": 470 },
+  { "codigo": "ELE-003", "nombre": "Cable libre de halógenos 2,5 mm² verde/amarillo", "unidad": "metro", "precio": 890, "stock": 390 },
+  { "codigo": "PIN-001", "nombre": "Pintura látex blanca (galón)", "unidad": "galón", "precio": 15490, "stock": 36 },
+  { "codigo": "PIN-007", "nombre": "Látex color marfil (galón)", "unidad": "galón", "precio": 15990, "stock": 12 },
+  { "codigo": "PIN-008", "nombre": "Látex color marfil (tineta 4 galones)", "unidad": "tineta", "precio": 54990, "stock": 6 },
+  { "codigo": "PIN-009", "nombre": "Pintura látex blanca (tineta 4 galones)", "unidad": "tineta", "precio": 52990, "stock": 8 },
+  { "codigo": "PIN-010", "nombre": "Esmalte al agua blanco (tineta 4 galones)", "unidad": "tineta", "precio": 68990, "stock": 4 }
+]
